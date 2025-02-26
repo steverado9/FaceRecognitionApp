@@ -1,9 +1,9 @@
-import React, { component } from 'react';
+import React, { Component } from 'react';
 import Navigation from './components/Navigation/Navigation';
 import './App.css';
 
 
-class App extends component {
+class App extends Component {
   render() {
     return (
       <div className="App">

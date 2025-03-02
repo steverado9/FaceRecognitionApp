@@ -7,7 +7,6 @@ import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import ParticleBackground from './components/ParticleBackground/ParticleBackground';
 import './App.css';
 import Clarifai from 'clarifai';
-import axios from 'axios';
 
 async function checkResult() {
   ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,7 +63,7 @@ async function checkResult() {
   // https://api.clarifai.com/v2/models/{YOUR_MODEL_ID}/outputs
   // this will default to the latest version_id
 
-  axios("https://api.clarifai.com/v2/models/" + MODEL_ID + "/versions/" + MODEL_VERSION_ID + "/outputs", requestOptions)
+  fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/versions/" + MODEL_VERSION_ID + "/outputs", requestOptions)
     .then(response => response.json())
     .then(result => {
       console.log('result', result)
@@ -99,16 +98,17 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      input: ''
+      input: '',
+      imageUrl: ''
     }
   }
 
   onInputChange = (event) => {
-    console.log(event.target.value);
+    this.setState({input: event.target.value})
   }
 
   onButtonSubmit = () => {
-    console.log('click');
+    this.setState({imageUrl: this.state.input})
     checkResult();
   }
 
@@ -123,7 +123,7 @@ class App extends Component {
           onInputChange={this.onInputChange}
           onButtonSubmit={this.onButtonSubmit}
         />
-        <FaceRecognition />
+        <FaceRecognition imageUrl={this.state.imageUrl} />
       </div>
     );
   }

@@ -63,11 +63,12 @@ async function checkResult() {
   // https://api.clarifai.com/v2/models/{YOUR_MODEL_ID}/outputs
   // this will default to the latest version_id
 
-  fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/versions/" + MODEL_VERSION_ID + "/outputs", requestOptions)
+  fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/versions/" + "/outputs", requestOptions)
     .then(response => response.json())
     .then(result => {
-      console.log('result', result)
       const regions = result.outputs[0].data.regions;
+      console.log(regions);
+      
 
 
       regions.forEach(region => {
@@ -105,6 +106,7 @@ class App extends Component {
 
   onInputChange = (event) => {
     this.setState({input: event.target.value})
+    
   }
 
   onButtonSubmit = () => {

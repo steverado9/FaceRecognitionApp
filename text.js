@@ -98,8 +98,9 @@ async function checkResult() {
     fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/versions/" + MODEL_VERSION_ID + "/outputs", requestOptions)
         .then(response => response.json())
         .then(result => {
-            console.log('result', result)
-            const regions = result.outputs[0].data.regions;
+            
+            const regions = result.outputs[0].data.regions
+            console.log('regions', regions)
 
 
             regions.forEach(region => {

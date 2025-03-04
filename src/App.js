@@ -5,8 +5,11 @@ import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import Rank from './components/Rank/Rank';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import ParticleBackground from './components/ParticleBackground/ParticleBackground';
+import SignIn from './components/SignIn/SignIn';
+import Register from './Register/Register';
 import './App.css';
 import Clarifai from 'clarifai';
+
 
 async function checkResult() {
   ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,10 +69,9 @@ async function checkResult() {
   fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/versions/" + "/outputs", requestOptions)
     .then(response => response.json())
     .then(result => {
-      const regions = result.outputs[0].data.regions;
-      console.log(regions);
-      
 
+      const regions = result.outputs[0].data.regions;
+      this.displayFaceBox(this.calculateFaceLocation(regions));
 
       regions.forEach(region => {
         // Accessing and rounding the bounding box values
@@ -100,32 +102,72 @@ class App extends Component {
     super();
     this.state = {
       input: '',
-      imageUrl: ''
+      imageUrl: '',
+      box: {},
+      route: 'signIn',
+      isSignedIn: false
     }
   }
 
+  calculateFaceLocation = (data) => {
+    const clarifaiFace = data[0].region_info.bounding_box;
+    const image = document.getElementById('inputImage')
+    const width = Number(image.width); //getting the width of the image
+    const height = Number(image.height); //getting the height of the image
+    return { //return object because box: { }
+      leftCol: clarifaiFace.left_col * width,
+      topRow: clarifaiFace.top_row * height,
+      rightCol: width - (clarifaiFace.right_col * width),
+      bottomRow: height - (clarifaiFace.bottom_row * height)
+    }
+  }
+
+  displayFaceBox = (box) => {
+    this.setState({ box: box });
+  }
+
   onInputChange = (event) => {
-    this.setState({input: event.target.value})
-    
+    this.setState({ input: event.target.value })
+
   }
 
   onButtonSubmit = () => {
-    this.setState({imageUrl: this.state.input})
+    this.setState({ imageUrl: this.state.input })
     checkResult();
   }
 
+  onRouteChange = (route) => {
+    if (route === 'signout') {
+      this.setState({isSignedIn: false})
+    } else if (route === 'home') {
+      this.setState({isSignedIn: true})
+    }
+    this.setState({route: route})
+  }
+
   render() {
+    const { isSignedIn, imageUrl, route, box } = this.state;
     return (
       <div className="App">
         <ParticleBackground />
-        <Navigation />
-        <Logo />
-        <Rank />
-        <ImageLinkForm
-          onInputChange={this.onInputChange}
-          onButtonSubmit={this.onButtonSubmit}
-        />
-        <FaceRecognition imageUrl={this.state.imageUrl} />
+        <Navigation isSignedIn={isSignedIn} onRouteChange ={ this.onRouteChange } />
+        {route === 'home'
+          ? 
+          <div>
+              <Logo />
+              <Rank />
+              <ImageLinkForm
+                onInputChange={this.onInputChange}
+                onButtonSubmit={this.onButtonSubmit}
+              />
+              <FaceRecognition box={box} imageUrl={imageUrl} />
+          </div>
+           : (
+            route === 'signIn'
+            ? <SignIn onRouteChange ={ this.onRouteChange}/>
+            : <Register onRouteChange ={ this.onRouteChange}/>
+           )
+        }
       </div>
     );
   }

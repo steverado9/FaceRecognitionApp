@@ -100,7 +100,7 @@ async function checkResult() {
         .then(result => {
             
             const regions = result.outputs[0].data.regions
-            console.log('regions', regions)
+            
 
 
             regions.forEach(region => {
@@ -110,6 +110,7 @@ async function checkResult() {
                 const leftCol = boundingBox.left_col.toFixed(3);
                 const bottomRow = boundingBox.bottom_row.toFixed(3);
                 const rightCol = boundingBox.right_col.toFixed(3);
+                console.log('regions', boundingBox)
 
                 region.data.concepts.forEach(concept => {
                     // Accessing and rounding the concept value

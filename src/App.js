@@ -9,6 +9,7 @@ import SignIn from './components/SignIn/SignIn';
 import Register from './Register/Register';
 import './App.css';
 import Clarifai from 'clarifai';
+import axios from 'axios';
 
 
 async function checkResult() {
@@ -54,8 +55,6 @@ async function checkResult() {
   const requestOptions = {
     method: 'POST',
     headers: {
-      'Access-Control-Allow-Origin': 'https://clarifai.com',
-      "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept",
       'Accept': 'application/json',
       'Authorization': 'Key ' + PAT
     },
@@ -65,6 +64,8 @@ async function checkResult() {
   // NOTE: MODEL_VERSION_ID is optional, you can also call prediction with the MODEL_ID only
   // https://api.clarifai.com/v2/models/{YOUR_MODEL_ID}/outputs
   // this will default to the latest version_id
+
+  
 
   fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/versions/" + "/outputs", requestOptions)
     .then(response => response.json())
